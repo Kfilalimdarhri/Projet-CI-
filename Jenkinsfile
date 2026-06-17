@@ -41,18 +41,14 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            environment {
-                // Nécessite de configurer un secret text "sonar-token" dans Jenkins
-                SONAR_TOKEN = credentials('sonar-token')
-            }
             steps {
                 echo 'Analyse de la qualité du code avec SonarQube...'
-                sh '''
-                    mvn sonar:sonar \
-                        -Dsonar.projectKey=bad-practices-app \
-                        -Dsonar.host.url=$SONAR_HOST_URL \
-                        -Dsonar.login=$SONAR_TOKEN
-                '''
+                // withSonarQubeEnv injecte l'URL + le token du serveur "SonarQube"
+                // (configuré dans Manage Jenkins) et permet au stage Quality Gate
+                // de retrouver l'analyse.
+                withSonarQubeEnv('SonarQube') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=bad-practices-app'
+                }
             }
         }
 
