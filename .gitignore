@@ -1,0 +1,10 @@
+# Build Maven
+target/
+
+# Config locale Claude
+.claude/
+
+# IDE
+.idea/
+*.iml
+.vscode/
